@@ -11,3 +11,6 @@ release.properties
 *.jar
 *.war
 *.ear
+/derby.log
+/EBeanDataStore-create.sql
+/EBeanDataStore-drop.sql
