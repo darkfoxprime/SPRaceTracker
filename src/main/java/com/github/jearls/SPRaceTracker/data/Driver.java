@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -19,6 +20,10 @@ public class Driver {
 
     public enum DriverStatus {
         ACTIVE, RETIRED;
+        public String toString() {
+            String allcaps = super.toString();
+            return allcaps.substring(0, 1) + allcaps.substring(1).toLowerCase();
+        }
     }
 
     public static final long serialVersionUID = 1L;
@@ -32,7 +37,7 @@ public class Driver {
     private int              age;
     private int              injuries;
     private DriverStatus     status;
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     private Team             team;
 
     // public List<RaceResults> results;
@@ -44,16 +49,13 @@ public class Driver {
      * The list of observers for this Driver.
      */
     @Transient
-    Set<DriverObserver> observers = null;
+    Set<DriverObserver> observers = new HashSet<DriverObserver>();
     
     /**
      * Adds a new observer.
      * @param observer The object to be notified when this Driver changes.
      */
     public void addObserver(DriverObserver observer) {
-        if (observers == null) {
-            observers = new HashSet<DriverObserver>();
-        }
         observers.add(observer);
     }
     

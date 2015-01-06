@@ -57,7 +57,7 @@ public class SPRaceTracker implements TeamObserver, DriverObserver {
             System.err.println("Error accessing database path: " + e);
             System.exit(1);
         }
-        
+
         EBeanDataStore dataStore = null;
         try {
             dataStore = new EBeanDataStore(dbPath);
@@ -66,19 +66,65 @@ public class SPRaceTracker implements TeamObserver, DriverObserver {
             System.exit(1);
         }
 
-        SPRaceTracker observer = new SPRaceTracker();
-
-        List<Team> teams =         dataStore.ebeanServer.find(Team.class).findList();
-        for (Team team : teams) {
-            String name = team.getName();
-            List<Driver> drivers = team.getDrivers();
-            StringBuffer driverNames = new StringBuffer();
-            for (Driver driver : drivers) {
-                driverNames.append("," + driver.getName());
-            }
-            driverNames.deleteCharAt(0);
-            System.err.println("Team " + name + " has drivers " + driverNames);
+        Team t =
+                dataStore.ebeanServer.find(Team.class).where()
+                        .eq("name", "Johnson").findUnique();
+        if (t == null) {
+            t = new Team();
+            t.setName("Johnson");
+            t.setTag("Y");
+            dataStore.ebeanServer.save(t);
         }
+        
+        Driver d =
+                dataStore.ebeanServer.find(Driver.class).where()
+                        .eq("name", "Dawn Matroi").findUnique();
+        if (d == null) {
+            d = new Driver();
+            d.setName("Dawn Matroi");
+            d.setAge(1);
+            d.setInjuries(0);
+            d.setXP(2);
+            d.setTag("YE");
+            d.setStatus(DriverStatus.ACTIVE);
+            dataStore.ebeanServer.save(d);
+        }
+        
+        if (d.getTeam() != t) {
+            d.setTeam(t);
+            dataStore.ebeanServer.save(d);
+        }
+
+        d = dataStore.ebeanServer.find(Driver.class).where().eq("name", "Nolan Sage").findUnique();
+        if (d == null) {
+            d = new Driver();
+            d.setName("Nolan Sage");
+            d.setAge(1);
+            d.setInjuries(0);
+            d.setXP(18);
+            d.setStatus(DriverStatus.ACTIVE);
+            d.setTag("YA");
+            dataStore.ebeanServer.save(d);
+        }
+        if (d.getTeam() != t) {
+            d.setTeam(t);
+            dataStore.ebeanServer.save(d);
+        }
+        
+        
+        System.err.println("Finding teams...");
+        List<Team> teams = dataStore.ebeanServer.find(Team.class).findList();
+        for (Team team : teams) {
+            System.err.println("--- Team " + team.getTag() + " ("
+                    + team.getName() + ") ---");
+            for (Driver driver : team.getDrivers()) {
+                System.err.println("Driver " + driver.getTag() + " ("
+                        + driver.getName() + ") age " + driver.getAge()
+                        + " injuries " + driver.getInjuries() + " XP "
+                        + driver.getXP() + " status " + driver.getStatus());
+            }
+        }
+        System.err.println("Done...");
     }
 
 }

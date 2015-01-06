@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -24,7 +25,7 @@ public class Team {
 
     private String           name;
     private String           tag;
-    @OneToMany(mappedBy = "team")
+    @OneToMany(mappedBy = "team", cascade=CascadeType.ALL)
     private List<Driver>     drivers;
 
     // public List<Season> seasons;
@@ -35,16 +36,13 @@ public class Team {
      * The list of observers for this Team.
      */
     @Transient
-    Set<TeamObserver> observers = null;
+    Set<TeamObserver> observers = new HashSet<TeamObserver>();
     
     /**
      * Adds a new observer.
      * @param observer The object to be notified when this team changes.
      */
     public void addObserver(TeamObserver observer) {
-        if (observers == null) {
-            observers = new HashSet<TeamObserver>();
-        }
         observers.add(observer);
     }
     

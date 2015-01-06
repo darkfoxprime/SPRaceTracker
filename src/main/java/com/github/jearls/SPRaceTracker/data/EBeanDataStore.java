@@ -37,10 +37,10 @@ public class EBeanDataStore extends DataStore {
             localDB.setUrl("jdbc:derby:" + dbDir.getAbsolutePath());
         } else {
             localDB.setUrl("jdbc:derby:" + dbDir.getAbsolutePath() + ";create=true");
+            ebeanConfig.setDdlGenerate(true);
+            ebeanConfig.setDdlRun(true);
         }
         ebeanConfig.setDataSourceConfig(localDB);
-        ebeanConfig.setDdlGenerate(true);
-        ebeanConfig.setDdlRun(true);
         ebeanConfig.setDefaultServer(true);
         
         try {
