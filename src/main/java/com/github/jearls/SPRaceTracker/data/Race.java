@@ -20,8 +20,7 @@ import com.github.jearls.SPRaceTracker.data.RaceObserver.RaceElement;
 @Entity
 public class Race {
     // When adding new fields or changing fields, make sure to update
-    // serialVersionUID. Also make sure to update or implement the
-    // "updateDataStore(DataStore, long)" class method!
+    // serialVersionUID.
     public static final long serialVersionUID = 1L;
 
     @Id
@@ -241,18 +240,4 @@ public class Race {
         } else
             return false;
     }
-
-    /**
-     * Updates the data store if a previous version was identified by the
-     * ObjectVersion mapper.
-     * 
-     * @param store
-     *            The DataStore to update.
-     * @param previousVersion
-     *            The previous version found.
-     */
-    public static void updateDataStore(DataStore store, long previousVersion) {
-        // nothing to update ... yet!
-    }
-
 }

@@ -19,8 +19,7 @@ import com.github.jearls.SPRaceTracker.data.FinishObserver.FinishElement;
 public class Finish {
 
     // When adding new fields or changing fields, make sure to update
-    // serialVersionUID. Also make sure to update or implement the
-    // "updateDataStore(DataStore, long)" class method!
+    // serialVersionUID.
     public static final long serialVersionUID = 1L;
 
     @Id
@@ -33,7 +32,7 @@ public class Finish {
     private Driver           driver;
     private boolean          finished;
     private boolean          injured;
-    private int              racesMissed;
+    private int              weeksMissed;
 
     // The observer handling code
 
@@ -74,51 +73,6 @@ public class Finish {
         for (FinishObserver observer : observers) {
             observer.finishChanged(this, whatChanged);
         }
-    }
-
-    /**
-     * @return the id
-     */
-    public UUID getId() {
-        return id;
-    }
-
-    /**
-     * @param id
-     *            the id to set
-     */
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    /**
-     * Returns true if "other" is a Finish and both RaceResultss have the same
-     * ID.
-     * 
-     * @param other
-     *            The object to compare against
-     * @return true if both RaceResultss have the same ID.
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof Finish) {
-            return this.getId().equals(((Finish) other).getId());
-        } else
-            return false;
-    }
-
-    /**
-     * Updates the data store if a previous version was identified by the
-     * ObjectVersion mapper.
-     * 
-     * @param store
-     *            The DataStore to update.
-     * @param previousVersion
-     *            The previous version found.
-     */
-    public static void updateDataStore(DataStore store, long previousVersion) {
-        // nothing to update ... yet!
     }
 
     /**
@@ -216,18 +170,51 @@ public class Finish {
     }
 
     /**
-     * @return the racesMissed
+     * @return the weeksMissed
      */
-    public int getRacesMissed() {
-        return racesMissed;
+    public int getWeeksMissed() {
+        return weeksMissed;
     }
 
     /**
-     * @param racesMissed
-     *            the racesMissed to set
+     * @param weeksMissed
+     *            the weeksMissed to set
      */
-    public void setRacesMissed(int racesMissed) {
-        this.racesMissed = racesMissed;
-        this.notify(FinishElement.RACES_MISSED);
+    public void setWeeksMissed(int weeksMissed) {
+        this.weeksMissed = weeksMissed;
+        this.notify(FinishElement.WEEKS_MISSED);
     }
+
+    /**
+     * @return the id
+     */
+    public UUID getId() {
+        return id;
+    }
+
+    /**
+     * @param id
+     *            the id to set
+     */
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    /**
+     * Returns true if "other" is a Finish and both RaceResultss have the same
+     * ID.
+     * 
+     * @param other
+     *            The object to compare against
+     * @return true if both RaceResultss have the same ID.
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Finish) {
+            return this.getId().equals(((Finish) other).getId());
+        } else
+            return false;
+    }
+
 }

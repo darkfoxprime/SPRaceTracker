@@ -10,7 +10,7 @@ public interface FinishObserver {
      * @author jearls
      */
     public enum FinishElement {
-        RACE, PLACE, DRIVER, FINISHED, INJURED, RACES_MISSED
+        RACE, PLACE, DRIVER, FINISHED, INJURED, WEEKS_MISSED
     }
 
     /**
