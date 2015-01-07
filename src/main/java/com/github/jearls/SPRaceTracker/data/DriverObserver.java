@@ -9,7 +9,7 @@ public interface DriverObserver {
      * @author jearls Used to indicate which part of a Driver has changed
      */
     public enum DriverElement {
-        NAME, TAG, TEAM, RACES, XP, AGE, INJURIES, STATUS
+        NAME, TAG, TEAM, RACES, XP, AGE, INJURIES, STATUS, FINISHES
     }
 
     /**
