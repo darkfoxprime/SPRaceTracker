@@ -32,7 +32,7 @@ public class Team {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
     private List<Driver>     drivers;
 
-    @ManyToMany(mappedBy = "teams", cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL)
     private List<Season>     seasons;
 
     // The observer handling code
