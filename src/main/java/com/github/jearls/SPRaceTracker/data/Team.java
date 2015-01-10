@@ -17,22 +17,23 @@ import com.github.jearls.SPRaceTracker.data.TeamObserver.TeamElement;
  * @author jearls
  */
 @Entity
+@IdentifiedBy("name")
 public class Team {
     // When adding new fields or changing fields, make sure to update
     // serialVersionUID.
     public static final long serialVersionUID = 1L;
 
     @Id
-    private UUID             id;
+    public UUID              id;
 
     // Semantics: must be unique!
-    private String           name;
-    private String           tag;
+    public String            name;
+    public String            tag;
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
-    private List<Driver>     drivers;
+    public List<Driver>      drivers;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private List<Season>     seasons;
+    @ManyToMany(mappedBy = "teams", cascade = CascadeType.ALL)
+    public List<Season>      seasons;
 
     // The observer handling code
 
@@ -182,12 +183,12 @@ public class Team {
      * @param season
      *            The season to add.
      */
-    public void addSeason(Season season) {
+    public void addSeasons(Season season) {
         if (!this.seasons.contains(season)) {
             this.seasons.add(season);
             this.notify(TeamElement.SEASONS);
             if (season.getTeams() == null || !season.getTeams().contains(this)) {
-                season.addTeam(this);
+                season.addTeams(this);
             }
         }
     }
@@ -199,12 +200,12 @@ public class Team {
      * @param season
      *            The season to remove.
      */
-    public void removeSeason(Season season) {
+    public void removeSeasons(Season season) {
         if (this.seasons.contains(season)) {
             this.seasons.remove(season);
             this.notify(TeamElement.SEASONS);
             if (season.getTeams() != null && season.getTeams().contains(this)) {
-                season.removeTeam(this);
+                season.removeTeams(this);
             }
         }
     }
@@ -238,5 +239,10 @@ public class Team {
             return this.getId().equals(((Team) other).getId());
         } else
             return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + "=\"" + this.getName() + "\"";
     }
 }

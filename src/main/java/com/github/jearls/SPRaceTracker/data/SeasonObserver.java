@@ -9,7 +9,7 @@ public interface SeasonObserver {
      * @author jearls Used to indicate which part of a Team has changed
      */
     public enum SeasonElement {
-        NAME, TEAMS, RACES, ORDER
+        NAME, TEAMS, RACES, SEASON_ORDER
     }
 
     /**

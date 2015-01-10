@@ -18,22 +18,23 @@ import com.github.jearls.SPRaceTracker.data.RaceObserver.RaceElement;
  * @author jearls
  */
 @Entity
+@IdentifiedBy({ "season", "raceNumber" })
 public class Race {
     // When adding new fields or changing fields, make sure to update
     // serialVersionUID.
     public static final long serialVersionUID = 1L;
 
     @Id
-    private UUID             id;
+    public UUID              id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Season           season;
-    private int              raceNumber;
-    private String           courseName;
-    private int              valueMultiplier;
-    private int              byWeeks;
-    @OneToMany(mappedBy = "race", cascade = CascadeType.ALL)
-    private List<Finish>     finishes;
+    public Season            season;
+    public int               raceNumber;
+    public String            courseName;
+    public int               valueMultiplier;
+    public int               byWeeks;
+    @OneToMany(mappedBy = "forRace", cascade = CascadeType.ALL)
+    public List<Finish>      finishes;
 
     // The observer handling code
 
@@ -176,9 +177,9 @@ public class Race {
     }
 
     /**
-     * Adds a finish to the race, if the finish is not already in the race. Also
-     * tells the finish to set the race, if the finish's race is not already set
-     * to this race.
+     * Adds a finish to the race, if the finish is not already in the
+     * race. Also tells the finish to set the race, if the finish's
+     * race is not already set to this race.
      * 
      * @param finish
      *            The finish to add.
@@ -187,15 +188,17 @@ public class Race {
         if (!this.finishes.contains(finish)) {
             this.finishes.add(finish);
             this.notify(RaceElement.FINISHERS);
-            if (finish.getRace() == null || !finish.getRace().equals(this)) {
-                finish.setRace(this);
+            if (finish.getForRace() == null
+                    || !finish.getForRace().equals(this)) {
+                finish.setForRace(this);
             }
         }
     }
 
     /**
-     * Removes a finish from the race, if the finish is in the race. Also tells
-     * the finish to unset the race, if the finish's race is equal to this race.
+     * Removes a finish from the race, if the finish is in the race. Also
+     * tells the finish to unset the race, if the finish's race is equal
+     * to this race.
      * 
      * @param finish
      *            The finish to remove.
@@ -204,8 +207,8 @@ public class Race {
         if (this.finishes.contains(finish)) {
             this.finishes.remove(finish);
             this.notify(RaceElement.FINISHERS);
-            if (finish.getRace() != null && finish.getRace().equals(this)) {
-                finish.setRace(null);
+            if (finish.getForRace() != null && finish.getForRace().equals(this)) {
+                finish.setForRace(null);
             }
         }
     }

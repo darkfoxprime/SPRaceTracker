@@ -1,6 +1,7 @@
 package com.github.jearls.SPRaceTracker.data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * This class manages the data store that the actual data objects use. Specific
@@ -65,7 +66,25 @@ public abstract class DataStore {
      *             if an error occurred while fetching the objects.
      */
     public abstract <T> List<T> fetchByField(Class<T> objectClass,
-            String field, Object value) throws DataStoreException;
+                                             String field, Object value)
+            throws DataStoreException;
+
+    /**
+     * Fetches zero or more objects from the data store who have fields that
+     * match all of the field value mappings in fieldData.
+     * 
+     * @param objectClass
+     *            The object class to fetch and return.
+     * @param fieldData
+     *            A mapping of field name -> field value.
+     * @return A List of zero or more objects of the given class that match the
+     *         query.
+     * @throws DataStoreException
+     *             if an error occurred while fetching the objects.
+     */
+    public abstract <T> List<T> fetchByFields(Class<T> objectClass,
+                                              Map<String, Object> fieldData)
+            throws DataStoreException;
 
     /**
      * Fetches all objects from the data store of a given class.

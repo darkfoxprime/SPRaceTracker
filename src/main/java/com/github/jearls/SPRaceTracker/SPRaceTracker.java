@@ -5,17 +5,19 @@ package com.github.jearls.SPRaceTracker;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.prefs.Preferences;
 
 import com.github.jearls.SPRaceTracker.data.DataStore;
 import com.github.jearls.SPRaceTracker.data.DataStoreException;
 import com.github.jearls.SPRaceTracker.data.Driver;
-import com.github.jearls.SPRaceTracker.data.Driver.DriverStatus;
 import com.github.jearls.SPRaceTracker.data.DriverObserver;
 import com.github.jearls.SPRaceTracker.data.EBeanDataStore;
+import com.github.jearls.SPRaceTracker.data.Finish;
 import com.github.jearls.SPRaceTracker.data.Team;
 import com.github.jearls.SPRaceTracker.data.TeamObserver;
+import com.github.jearls.SPRaceTracker.data.importexport.CSVExporter;
+import com.github.jearls.SPRaceTracker.data.importexport.ImporterExporterException;
+import com.github.jearls.SPRaceTracker.data.importexport.XMLExporter;
 import com.github.jearls.SPRaceTracker.ui.DatabaseDirectoryChooser;
 
 /**
@@ -37,7 +39,7 @@ public class SPRaceTracker implements TeamObserver, DriverObserver {
         System.err.println("Driver changed: " + changed);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         Preferences prefNode =
                 Preferences.userNodeForPackage(SPRaceTracker.class);
         File dbPath = null;
@@ -62,95 +64,20 @@ public class SPRaceTracker implements TeamObserver, DriverObserver {
         try {
             dataStore = new EBeanDataStore(dbPath);
 
-            Team t;
+            // new XMLImporter(dataStore, new
+            // File(System.getProperty("user.home", ".")
+            // + File.separator + APP_NAME + ".xml"), APP_NAME).importData();
+            // System.exit(0);
             try {
-                t =
-                        dataStore.fetchByField(Team.class, "name", "Johnson")
-                                .get(0);
-            } catch (IndexOutOfBoundsException e) {
-                t = new Team();
-                t.setName("Johnson");
-                t.setTag("Y");
-                dataStore.save(t);
+                new CSVExporter(new File(System.getProperty("user.home", ".")
+                        + File.separator + APP_NAME + ".zip")).exportData(
+                        dataStore, Finish.class);
+                new XMLExporter(new File(System.getProperty("user.home", ".")
+                        + File.separator + APP_NAME + ".xml"), APP_NAME)
+                        .exportData(dataStore, Finish.class);
+            } catch (ImporterExporterException e) {
+                System.err.println("Error exporting data store: " + e);
             }
-            SPRaceTracker observer = new SPRaceTracker();
-            t.addObserver(observer);
-
-            Driver d;
-            try {
-                d =
-                        dataStore.fetchByField(Driver.class, "name",
-                                "Dawn Matroi").get(0);
-            } catch (IndexOutOfBoundsException e) {
-                d = new Driver();
-                d.setName("Dawn Matroi");
-                d.setAge(1);
-                d.setInjuries(0);
-                d.setXP(2);
-                d.setTag("YE");
-                d.setStatus(DriverStatus.ACTIVE);
-                dataStore.save(d);
-            }
-
-            if (d.getTeam() == null || !(d.getTeam().equals(t))) {
-                d.setTeam(t);
-                dataStore.save(d);
-            }
-
-            try {
-                d =
-                        dataStore.fetchByField(Driver.class, "name",
-                                "Nolan Sage").get(0);
-            } catch (IndexOutOfBoundsException e) {
-                d = new Driver();
-                d.setName("Nolan Sage");
-                d.setAge(1);
-                d.setInjuries(0);
-                d.setXP(2);
-                d.setTag("YA");
-                d.setStatus(DriverStatus.ACTIVE);
-                dataStore.save(d);
-            }
-
-            if (d.getTeam() == null || !(d.getTeam().equals(t))) {
-                d.setTeam(t);
-                dataStore.save(d);
-            }
-
-            try {
-                d =
-                        dataStore.fetchByField(Driver.class, "name", "Zólta")
-                                .get(0);
-            } catch (IndexOutOfBoundsException e) {
-                d = new Driver();
-                d.setName("Zólta");
-                d.setAge(1);
-                d.setInjuries(0);
-                d.setXP(2);
-                d.setTag("YC");
-                d.setStatus(DriverStatus.ACTIVE);
-                dataStore.save(d);
-            }
-
-            if (d.getTeam() == null || !(d.getTeam().equals(t))) {
-                d.setTeam(t);
-                dataStore.save(d);
-            }
-
-            System.err.println("Finding teams...");
-            List<Team> teams = dataStore.fetchAll(Team.class);
-            for (Team team : teams) {
-                System.err.println("--- Team " + team.getTag() + " ("
-                        + team.getName() + ") ---");
-                for (Driver driver : team.getDrivers()) {
-                    System.err.println("Driver " + driver.getTag() + " ("
-                            + driver.getName() + ") age " + driver.getAge()
-                            + " injuries " + driver.getInjuries() + " XP "
-                            + driver.getXP() + " status " + driver.getStatus());
-                }
-            }
-            System.err.println("Done...");
-
         } catch (DataStoreException e) {
             System.err.println("Error initializing data store: " + e);
             System.exit(1);

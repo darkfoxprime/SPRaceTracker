@@ -7,7 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
 import com.github.jearls.SPRaceTracker.data.FinishObserver.FinishElement;
@@ -16,6 +16,7 @@ import com.github.jearls.SPRaceTracker.data.FinishObserver.FinishElement;
  * @author jearls
  */
 @Entity
+@IdentifiedBy({ "forRace", "place" })
 public class Finish {
 
     // When adding new fields or changing fields, make sure to update
@@ -23,16 +24,16 @@ public class Finish {
     public static final long serialVersionUID = 1L;
 
     @Id
-    private UUID             id;
+    public UUID              id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Race             race;
-    private int              place;
-    @OneToMany(cascade = CascadeType.ALL)
-    private Driver           driver;
-    private boolean          finished;
-    private boolean          injured;
-    private int              weeksMissed;
+    @ManyToOne(cascade = CascadeType.ALL)
+    public Race              forRace;
+    public int               place;
+    @ManyToOne(cascade = CascadeType.ALL)
+    public Driver            driver;
+    public boolean           finished;
+    public boolean           injured;
+    public int               weeksMissed;
 
     // The observer handling code
 
@@ -76,19 +77,19 @@ public class Finish {
     }
 
     /**
-     * @return the race
+     * @return the forRace
      */
-    public Race getRace() {
-        return race;
+    public Race getForRace() {
+        return forRace;
     }
 
     /**
-     * @param race
-     *            the race to set
+     * @param forRace
+     *            the forRace to set
      */
-    public void setRace(Race race) {
-        Race oldRace = this.race;
-        this.race = race;
+    public void setForRace(Race race) {
+        Race oldRace = this.forRace;
+        this.forRace = race;
         this.notify(FinishElement.RACE);
         if (oldRace != null) {
             oldRace.removeFinish(this);

@@ -18,15 +18,11 @@ import com.github.jearls.SPRaceTracker.data.DriverObserver.DriverElement;
  * @author jearls
  */
 @Entity
+@IdentifiedBy("name")
 public class Driver {
 
     public enum DriverStatus {
-        ACTIVE, RETIRED;
-        @Override
-        public String toString() {
-            String allcaps = super.toString();
-            return allcaps.substring(0, 1) + allcaps.substring(1).toLowerCase();
-        }
+        Active, Retired;
     }
 
     // When adding new fields or changing fields, make sure to update
@@ -34,20 +30,18 @@ public class Driver {
     public static final long serialVersionUID = 1L;
 
     @Id
-    private UUID             id;
+    public UUID              id;
 
-    private String           name;
-    private String           tag;
-    private int              XP;
-    private int              age;
-    private int              injuries;
-    private DriverStatus     status;
+    public String            name;
+    public String            tag;
+    public int               XP;
+    public int               age;
+    public int               injuries;
+    public DriverStatus      status;
     @ManyToOne(cascade = CascadeType.ALL)
-    private Team             team;
+    public Team              team;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "driver")
-    private List<Finish>     finishes;
-
-    // public List<Finish> results;
+    public List<Finish>      finishes;
 
     // The observer handling code
 
@@ -289,5 +283,10 @@ public class Driver {
             return this.getId().equals(((Driver) other).getId());
         } else
             return false;
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + "=\"" + this.getName() + "\"";
     }
 }

@@ -2,11 +2,14 @@ package com.github.jearls.SPRaceTracker.data;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.persistence.OptimisticLockException;
 
 import com.avaje.ebean.EbeanServer;
 import com.avaje.ebean.EbeanServerFactory;
+import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.config.DataSourceConfig;
 import com.avaje.ebean.config.ServerConfig;
 
@@ -107,8 +110,10 @@ public class EBeanDataStore extends DataStore {
     public <T> T fetchByID(Class<T> objectClass, Object ID)
             throws DataStoreNotFoundException {
         T returnVal = this.ebeanServer.find(objectClass, ID);
-        if (returnVal == null) { throw new DataStoreNotFoundException(ID
-                + " not found for " + objectClass.getCanonicalName()); }
+        if (returnVal == null) {
+            throw new DataStoreNotFoundException(ID + " not found for "
+                    + objectClass.getCanonicalName());
+        }
         return returnVal;
     }
 
@@ -129,9 +134,39 @@ public class EBeanDataStore extends DataStore {
      */
     @Override
     public <T> List<T> fetchByField(Class<T> objectClass, String field,
-            Object value) throws DataStoreException {
+                                    Object value) throws DataStoreException {
         return this.ebeanServer.find(objectClass).where().eq(field, value)
                 .findList();
+    }
+
+    /**
+     * Fetches zero or more objects from the data store who have fields that
+     * match all of the field value mappings in fieldData.
+     * 
+     * @param objectClass
+     *            The object class to fetch and return.
+     * @param fieldData
+     *            A mapping of field name -> field value.
+     * @return A List of zero or more objects of the given class that match the
+     *         query.
+     * @throws DataStoreException
+     *             if an error occurred while fetching the objects.
+     * @see com.github.jearls.SPRaceTracker.data.DataStore#fetchByFields(java.lang.Class,
+     *      java.util.Map)
+     */
+    @Override
+    public <T> List<T> fetchByFields(Class<T> objectClass,
+                                     Map<String, Object> fieldData)
+            throws DataStoreException {
+        ExpressionList<T> query = this.ebeanServer.find(objectClass).where();
+        for (Entry<String, Object> e : fieldData.entrySet()) {
+            Object value = e.getValue();
+            query = query.eq(e.getKey(), value);
+        }
+        List<T> results = query.findList();
+        // System.err.println("Query for " + fieldData + " -> " +
+        // query.query().getGeneratedSql());
+        return results;
     }
 
     /**

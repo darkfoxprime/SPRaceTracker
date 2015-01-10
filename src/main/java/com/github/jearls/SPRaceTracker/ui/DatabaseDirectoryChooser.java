@@ -243,7 +243,9 @@ public class DatabaseDirectoryChooser extends JDialog implements ActionListener 
         // verify that the dbDirName is a valid name
         try {
             new File(dbDirName).getCanonicalFile();
-            if (dbDirName.indexOf(File.separator) > -1) { throw new IOException(); }
+            if (dbDirName.indexOf(File.separator) > -1) {
+                throw new IOException();
+            }
         } catch (IOException e) {
             throw new IllegalArgumentException("Invalid dbDirName \""
                     + dbDirName + "\"");
@@ -294,8 +296,7 @@ public class DatabaseDirectoryChooser extends JDialog implements ActionListener 
         });
         // Create the individual components that will be added to the dialog
         JLabel instructionLabel =
-                new JLabel(
-                        String.format(instructionLabelText, dbDirName));
+                new JLabel(String.format(instructionLabelText, dbDirName));
         JLabel directoryLabel = new JLabel(directoryLabelText);
         JLabel statusLabel = new JLabel(" ");
         // The buttons: Each button gets this class as an action listener, and
@@ -371,11 +372,13 @@ public class DatabaseDirectoryChooser extends JDialog implements ActionListener 
         // pack the layout
         pack();
         // center it on the screen
-        DisplayMode dm = this.getGraphicsConfiguration().getDevice().getDisplayMode();
+        DisplayMode dm =
+                this.getGraphicsConfiguration().getDevice().getDisplayMode();
         int screenWidth = dm.getWidth();
         int screenHeight = dm.getHeight();
         Dimension windowSize = getSize();
-        setLocation((screenWidth - windowSize.width)/2, (screenHeight - windowSize.height)/2);
+        setLocation((screenWidth - windowSize.width) / 2,
+                (screenHeight - windowSize.height) / 2);
         // and show it to run the dialog
         setVisible(true);
     }
@@ -468,8 +471,7 @@ public class DatabaseDirectoryChooser extends JDialog implements ActionListener 
      *            created.
      * @return the dbDir File.
      */
-    public static File
-            chooseDatabaseDirectory(String dbDirName, File defaultDir) {
+    public static File chooseDatabaseDirectory(String dbDirName, File defaultDir) {
         DatabaseDirectoryChooser dialog =
                 new DatabaseDirectoryChooser(dbDirName, defaultDir);
         return dialog.dbDir;

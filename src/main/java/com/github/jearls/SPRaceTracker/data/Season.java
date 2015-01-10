@@ -20,22 +20,27 @@ import com.github.jearls.SPRaceTracker.data.SeasonObserver.SeasonElement;
  * @author jearls
  */
 @Entity
+@IdentifiedBy("name")
 public class Season {
     // When adding new fields or changing fields, make sure to update
     // serialVersionUID.
     public static final long serialVersionUID = 1L;
 
     @Id
-    private UUID             id;
+    public UUID              id;
 
-    private String           name;
-    @ManyToMany(mappedBy = "seasons", cascade = CascadeType.ALL)
-    private List<Team>       teams;
+    public String            name;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    public List<Team>        teams;
+
     @OneToMany(mappedBy = "season", cascade = CascadeType.ALL)
-    private List<Race>       races;
+    public List<Race>        races;
+
     @OrderBy
-    @SequenceGenerator(name="SeasonOrder", allocationSize=1, initialValue=1)
-    private int              order;
+    @SequenceGenerator(name = "SeasonOrder", allocationSize = 1,
+            initialValue = 1)
+    public int               seasonOrder;
 
     // The observer handling code
 
@@ -118,12 +123,12 @@ public class Season {
      * @param team
      *            The team to add.
      */
-    public void addTeam(Team team) {
+    public void addTeams(Team team) {
         if (!this.teams.contains(team)) {
             this.teams.add(team);
             this.notify(SeasonElement.TEAMS);
             if (team.getSeasons() == null || !team.getSeasons().contains(this)) {
-                team.addSeason(this);
+                team.addSeasons(this);
             }
         }
     }
@@ -135,12 +140,12 @@ public class Season {
      * @param team
      *            The team to remove.
      */
-    public void removeTeam(Team team) {
+    public void removeTeams(Team team) {
         if (this.teams.contains(team)) {
             this.teams.remove(team);
             this.notify(SeasonElement.TEAMS);
             if (team.getSeasons() != null && team.getSeasons().contains(this)) {
-                team.removeSeason(this);
+                team.removeSeasons(this);
             }
         }
     }
@@ -197,19 +202,19 @@ public class Season {
     }
 
     /**
-     * @return the order
+     * @return the seasonOrder
      */
-    public int getOrder() {
-        return order;
+    public int getSeasonOrder() {
+        return seasonOrder;
     }
 
     /**
-     * @param order
-     *            the order to set
+     * @param seasonOrder
+     *            the seasonOrder to set
      */
-    public void setOrder(int order) {
-        this.order = order;
-        this.notify(SeasonElement.ORDER);
+    public void setSeasonOrder(int seasonOrder) {
+        this.seasonOrder = seasonOrder;
+        this.notify(SeasonElement.SEASON_ORDER);
     }
 
     /**

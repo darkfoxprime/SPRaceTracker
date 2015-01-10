@@ -6,7 +6,8 @@ package com.github.jearls.SPRaceTracker.data;
 public interface FinishObserver {
 
     /**
-     *  Used to indicate which part of a Finish has changed
+     * Used to indicate which part of a Finish has changed
+     * 
      * @author jearls
      */
     public enum FinishElement {
